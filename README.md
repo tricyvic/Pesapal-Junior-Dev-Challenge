@@ -1,0 +1,1 @@
+1. I will start by having a working in-memory database + REPL
