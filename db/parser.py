@@ -2,6 +2,11 @@ import re
 
 def parse(sql):
     sql = sql.strip().rstrip(";")
+    if "JOIN" in sql.upper():
+        # crude parser
+        match = re.match(r"SELECT \* FROM (\w+) JOIN (\w+) ON (\w+\.\w+)=(\w+\.\w+)", sql, re.I)
+        t1, t2, c1, c2 = match.groups()
+        return ("SELECT_JOIN", t1, t2, c1, c2)
 
     if sql.upper().startswith("CREATE TABLE"):
         return parse_create(sql)

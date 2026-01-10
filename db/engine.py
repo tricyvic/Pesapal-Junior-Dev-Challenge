@@ -47,3 +47,20 @@ class Database:
                 return [table.rows[pk] for pk in pks]
 
             return [r for r in table.rows.values() if r[col] == val]
+        
+        if command[0] == "SELECT_JOIN":
+            # parse example:
+            # SELECT * FROM orders JOIN users ON orders.user_id = users.id
+            table1 = self.tables[command[1]]
+            table2 = self.tables[command[2]]
+            col1 = command[3]  # orders.user_id
+            col2 = command[4]  # users.id
+
+            results = []
+            for row1 in table1.rows.values():
+                for row2 in table2.rows.values():
+                    if row1[col1.split(".")[1]] == row2[col2.split(".")[1]]:
+                        combined = {**row1, **row2}
+                        results.append(combined)
+            return results
+
