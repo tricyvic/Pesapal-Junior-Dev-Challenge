@@ -1,3 +1,5 @@
+from db import storage
+
 class Table:
     def __init__(self,name, columns, primary_key, unique_columns):
         self.name = name
@@ -28,3 +30,11 @@ class Table:
     
     def select_all(self):
         return list(self.rows.values())
+    
+    def load(self):
+        rows = storage.load_table(self.name)
+        for row in rows:
+            self.insert(row)  # reuse existing insert for constraint checks
+
+    def save(self):
+        storage.save_table(self)
