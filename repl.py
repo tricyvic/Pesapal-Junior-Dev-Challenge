@@ -5,7 +5,7 @@ def main():
     print("Welcome to Victor's pesaDB")
     while True:
         try:
-            sql = input("pesaDB> ")
+            sql = input("Victor's pesaDB> ")
             if sql.lower() in ("exit", "quit"):
                 break
             result = db.execute(sql)

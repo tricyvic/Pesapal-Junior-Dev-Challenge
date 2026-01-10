@@ -15,7 +15,8 @@ class Database:
 
             # auto-create indexes for unique columns
             for col in unique:
-                table.indexes[col] = Index(col)
+                table.indexes[col] = Index(col, pk)
+
 
             self.tables[name] = table
             return f"Table '{name}' created"
