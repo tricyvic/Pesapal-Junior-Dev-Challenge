@@ -6,6 +6,24 @@ class Database:
     def __init__(self):
         self.tables = {}
 
+    def create_table_if_not_exists(self, name, columns, primary_key, unique_columns):
+        if name in self.tables:
+            return
+
+        table = Table(name, columns, primary_key, unique_columns)
+
+        # create indexes for unique columns
+        for col in unique_columns:
+            table.indexes[col] = Index(col, primary_key)
+
+        # load persisted data if exists
+        try:
+            table.load()
+        except Exception:
+            pass
+
+        self.tables[name] = table
+
     def execute(self, sql):
         command = parse(sql)
 
@@ -23,6 +41,9 @@ class Database:
 
         if command[0] == "INSERT":
             _, name, values = command
+            if name not in self.tables:
+                raise ValueError(f"Table '{name}' does not exist")
+
             table = self.tables[name]
 
             row = dict(zip(table.columns.keys(), values))
@@ -36,6 +57,9 @@ class Database:
 
         if command[0] == "SELECT":
             _, name, col, val = command
+            if name not in self.tables:
+                raise ValueError(f"Table '{name}' does not exist")
+
             table = self.tables[name]
 
             if col is None:

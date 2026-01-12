@@ -32,9 +32,23 @@ class Table:
         return list(self.rows.values())
     
     def load(self):
+        from db import storage
+
         rows = storage.load_table(self.name)
+
+        # RESET in-memory state before loading
+        self.rows = {}
+
+        for index in self.indexes.values():
+            index.index = {}
+
         for row in rows:
-            self.insert(row)  # reuse existing insert for constraint checks
+            pk = row[self.primary_key]
+            self.rows[pk] = row
+
+            # rebuild indexes
+            for index in self.indexes.values():
+                index.add(row)
 
     def save(self):
         storage.save_table(self)
