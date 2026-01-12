@@ -11,7 +11,7 @@ for table in db.tables.values():
 
 def list_users(request):
     users = db.execute("SELECT * FROM users;")
-    return HttpResponse(str(users))
+    return HttpResponse(f"Welcome {str(users)}")
 
 def create_user(request):
     user_id = int(request.GET.get("id"))
